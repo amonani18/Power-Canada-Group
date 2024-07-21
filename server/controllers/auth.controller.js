@@ -28,20 +28,20 @@ const signin = async (req, res) => {
   }
 };
 
-// Sign out function to clear JWT token from cookies
+//Here is the Sign out function to clear JWT token from cookies
 const signout = (req, res) => {
   res.clearCookie("t");
   return res.status("200").json({ message: "Signed out" });
 };
 
-// Middleware to require a valid JWT token for access to certain routes
+//Here is the Middleware to require a valid JWT token for access to certain routes
 const requireSignin = expressjwt({
   secret: config.jwtSecret,
   algorithms: ["HS256"],
   userProperty: "auth",
 });
 
-// Middleware to check if the authenticated user is authorized to perform certain actions
+//Here is the Middleware to check if the authenticated user is authorized to perform certain actions
 const hasAuthorization = (req, res, next) => {
   const authorized = req.profile && req.auth && req.profile._id == req.auth._id;
   if (!authorized) {
