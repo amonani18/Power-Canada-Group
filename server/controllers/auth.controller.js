@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { expressjwt } from "express-jwt";
 import config from "./../../config/config.js";
 
-// Sign in function to generate JWT token upon user login
+//Here is the Sign in function to generate JWT token upon user login
 const signin = async (req, res) => {
   try {
     let user = await User.findOne({ email: req.body.email });
