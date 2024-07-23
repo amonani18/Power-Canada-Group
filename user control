@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { expressjwt } from "express-jwt";
 import config from "./../../config/config.js";
 
-//Here is the Sign in function to generate JWT token upon user login
+// Here is sign in function to generate JWT token upon user login
 const signin = async (req, res) => {
   try {
     let user = await User.findOne({ email: req.body.email });
@@ -28,20 +28,20 @@ const signin = async (req, res) => {
   }
 };
 
-//Here is the Sign out function to clear JWT token from cookies
+//Here is  Sign out function to clear JWT token from cookies
 const signout = (req, res) => {
   res.clearCookie("t");
   return res.status("200").json({ message: "Signed out" });
 };
 
-//Here is the Middleware to require a valid JWT token for access to certain routes
+//Here is  Middleware to require a valid JWT token for access to certain routes
 const requireSignin = expressjwt({
   secret: config.jwtSecret,
   algorithms: ["HS256"],
   userProperty: "auth",
 });
 
-//Here is the Middleware to check if the authenticated user is authorized to perform certain actions
+//Here is  Middleware to check if the authenticated user is authorized to perform certain actions
 const hasAuthorization = (req, res, next) => {
   const authorized = req.profile && req.auth && req.profile._id == req.auth._id;
   if (!authorized) {
