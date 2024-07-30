@@ -1,9 +1,10 @@
 import express from 'express';
-import authCtrl from '../controllers/auth.controller.js';
-
+// Change this to use named imports
+import { signin } from '../controllers/auth.controller.js';
 
 const router = express.Router();
 
-router.route('/signin').post(authCtrl.signin);  
+// Use the imported named function directly
+router.route('/signin').post(signin);  
 
 export default router;

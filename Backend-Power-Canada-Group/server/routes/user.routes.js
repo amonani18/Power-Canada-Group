@@ -1,18 +1,21 @@
-  import express from "express";
-import authCtrl from "../controllers/auth.controller.js";
-import userCtrl from "../controllers/user.controller.js";
+import express from "express";
+import { hasAuthorization, requireSignin } from "../controllers/auth.controller.js";
+import { create, list, read, remove, update, userByID } from "../controllers/user.controller.js";
 
-  const router = express.Router();
+const router = express.Router();
 
-  router.route("/")
-    .get(userCtrl.list)
-    .post(userCtrl.create);
-  router.route('/signup').post(userCtrl.create);
-  router.route("/:userId")
-    .get(authCtrl.requireSignin, userCtrl.read)
-    .put(authCtrl.requireSignin, authCtrl.hasAuthorization, userCtrl.update)
-    .delete(authCtrl.requireSignin, authCtrl.hasAuthorization, userCtrl.remove);
+router.route("/")
+    .get(list)    // GET all users
+    .post(create); // POST a new user
 
-  router.param("userId", userCtrl.userByID);
+router.route("/signup")
+    .post(create); // POST a new user at the signup route
 
-  export default router;
+router.route("/:userId")
+    .get(requireSignin, read)    // GET a single user by ID
+    .put(requireSignin, hasAuthorization, update)  // PUT update a user by ID
+    .delete(requireSignin, hasAuthorization, remove);  // DELETE a user by ID
+
+router.param("userId", userByID); // Parameter middleware to load user when 'userId' is part of the URL
+
+export default router;

@@ -1,53 +1,43 @@
-import User from "../models/user.model.js";
-import jwt from "jsonwebtoken";
-import { expressjwt } from "express-jwt";
-import config from "./../../config/config.js";
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import config from '../../config/config.js';
+import User from '../models/user.model.js';
 
-//Here is the Sign in function to generate JWT token upon user login
 const signin = async (req, res) => {
   try {
-    let user = await User.findOne({ email: req.body.email });
-    if (!user) return res.status("401").json({ error: "User not found" });
-
-    if (!user.authenticate(req.body.password)) {
-      return res.status("401").send({ error: "Email and password don't match." });
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      // If user not found, return a user not found message
+      return res.status('401').json({ error: "User not found" });
     }
 
-    const token = jwt.sign({ _id: user._id }, config.jwtSecret, { expiresIn: '1h' });
-    res.cookie("t", token, { expire: new Date() + 9999 });
+    // Compare the provided password with the hashed password in the database
+    if (!await bcrypt.compare(req.body.password, user.hashed_password)) {
+      // If passwords do not match, return a wrong password message
+      return res.status('401').json({ error: "Wrong password" });
+    }
+
+    // If passwords match, create a token
+    const token = jwt.sign({ _id: user._id }, config.jwtSecret, { expiresIn: '1d' });
+
+    // Set a cookie with the token
+    res.cookie('t', token, { expire: new Date() + 9999 });
+
+    // Return a success message with user info, but exclude the password
     return res.json({
+      message: "Welcome " + user.name + "!",
       token,
       user: {
         _id: user._id,
         name: user.name,
-        email: user.email,
+        email: user.email
       },
     });
   } catch (err) {
-    return res.status("401").json({ error: "Could not sign in" });
+    // General error handling
+    return res.status('500').json({ error: "API error during signin" });
   }
 };
 
-//Here is the Sign out function to clear JWT token from cookies
-const signout = (req, res) => {
-  res.clearCookie("t");
-  return res.status("200").json({ message: "Signed out" });
-};
+export { signin };
 
-//Here is the Middleware to require a valid JWT token for access to certain routes
-const requireSignin = expressjwt({
-  secret: config.jwtSecret,
-  algorithms: ["HS256"],
-  userProperty: "auth",
-});
-
-//Here is the Middleware to check if the authenticated user is authorized to perform certain actions
-const hasAuthorization = (req, res, next) => {
-  const authorized = req.profile && req.auth && req.profile._id == req.auth._id;
-  if (!authorized) {
-    return res.status("403").json({ error: "User is not authorized" });
-  }
-  next();
-};
-
-export default { signin, signout, requireSignin, hasAuthorization };
