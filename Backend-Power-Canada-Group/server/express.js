@@ -1,13 +1,12 @@
-import express from "express";
 import bodyParser from "body-parser";
-import cookieParser from "cookie-parser";
 import compress from "compression";
+import cookieParser from "cookie-parser";
 import cors from "cors";
+import express from "express";
 import helmet from "helmet";
 import template from "./../template.js"; // Import the template
-import userRoutes from "./routes/user.routes.js";
 import authRoutes from "./routes/auth.routes.js"; // Correct import for auth routes
-import path from "path";
+import userRoutes from "./routes/user.routes.js";
 
 const app = express();
 const CURRENT_WORKING_DIR = process.cwd();
@@ -21,9 +20,8 @@ app.use(helmet());
 app.use(cors());
 
 // Mount routes
-app.use("/api/users", userRoutes); 
-app.use("/auth", authRoutes); 
-
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 // Serve the HTML template at the root URL
 app.get("/", (req, res) => {
   res.status(200).send(template());
@@ -38,5 +36,12 @@ app.use((err, req, res, next) => {
     console.log(err);
   }
 });
+
+
+app.use(cors({
+    origin: 'http://localhost:3000', // Assuming your React frontend runs on port 3000
+    credentials: true  // if you are using cookies/token with credentials
+}));
+
 
 export default app;

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
 import axios from 'axios';
+import React, { useState } from 'react';
 
 const SignIn = () => {
     const [formData, setFormData] = useState({
@@ -13,16 +13,23 @@ const SignIn = () => {
             [e.target.name]: e.target.value
         });
     };
-
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('/api/signin', formData);
-            // Handle successful signin
+            // Make sure to include the full URL and correct endpoint
+            const response = await axios.post('http://localhost:5000/api/auth/signin', {
+                email: formData.email,  // Assuming your backend expects 'email' not 'username'
+                password: formData.password
+            });
+            console.log('Login successful:', response.data);
+            // Here you can redirect the user or manage login state as needed
         } catch (error) {
-            // Handle errors
+            console.error('Login failed:', error.response.data);
         }
     };
+    
+    
 
     return (
         <form onSubmit={handleSubmit}>

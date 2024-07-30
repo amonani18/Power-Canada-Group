@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
 import crypto from 'crypto';
+import mongoose from 'mongoose';
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -10,17 +10,9 @@ const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     trim: true,
-    unique: 'Email already exists',
+    unique: true, // Ensure no duplicate emails
     match: [/.+\@.+\..+/, 'Please fill a valid email address'],
     required: 'Email is required'
-  },
-  created: {
-    type: Date,
-    default: Date.now
-  },
-  updated: {
-    type: Date,
-    default: Date.now
   },
   hashed_password: {
     type: String,
@@ -29,31 +21,28 @@ const UserSchema = new mongoose.Schema({
   salt: String
 });
 
+// Add methods to UserSchema here if not already implemented
+UserSchema.methods.encryptPassword = function(password) {
+  if (!password) return '';
+  try {
+    return crypto.createHmac('sha256', this.salt).update(password).digest('hex');
+  } catch (err) {
+    return '';  // This catch might be silencing important errors
+  }
+};
+
 UserSchema.virtual('password')
   .set(function(password) {
     this._password = password;
-    this.salt = this.makeSalt();
+    this.salt = this.makeSalt(); // Ensure this method is working correctly
     this.hashed_password = this.encryptPassword(password);
   })
   .get(function() {
     return this._password;
   });
 
-UserSchema.methods = {
-  authenticate: function(plainText) {
-    return this.encryptPassword(plainText) === this.hashed_password;
-  },
-  encryptPassword: function(password) {
-    if (!password) return '';
-    try {
-      return crypto.createHmac('sha1', this.salt).update(password).digest('hex');
-    } catch (err) {
-      return '';
-    }
-  },
-  makeSalt: function() {
-    return Math.round(new Date().valueOf() * Math.random()) + '';
-  }
+UserSchema.methods.makeSalt = function() {
+  return Math.round((new Date().valueOf() * Math.random())) + '';
 };
 
 export default mongoose.model('User', UserSchema);

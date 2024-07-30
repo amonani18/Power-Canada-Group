@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+// src/pages/SignUp.js
 import axios from 'axios';
+import React, { useState } from 'react';
 
-const SignUp = () => {
+const SignUp = ({ setUsers, users }) => {
     const [formData, setFormData] = useState({
-        username: '',
+        name: '',
+        email: '',
         password: ''
     });
+    const [message, setMessage] = useState('');
 
     const handleChange = (e) => {
         setFormData({
@@ -17,26 +20,36 @@ const SignUp = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('/api/signup', formData);
-            // Handle successful signup
+            const response = await axios.post('http://localhost:5000/api/users', {
+                name: formData.name,
+                email: formData.email,
+                password: formData.password // Assuming backend handles password hashing
+            });
+            setUsers([...users, response.data]); // Add new user to users array
+            setMessage(`${response.data.name} added to user list.`);
+            setFormData({ name: '', email: '', password: '' }); // Clear the form
         } catch (error) {
-            // Handle errors
+            setMessage('Error signing up. Please try again.');
         }
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h2>Sign Up</h2>
-            <label>
-                Username:
-                <input type="text" name="username" value={formData.username} onChange={handleChange} />
-            </label>
-            <label>
-                Password:
-                <input type="password" name="password" value={formData.password} onChange={handleChange} />
-            </label>
-            <button type="submit">Sign Up</button>
-        </form>
+        <div>
+            <form onSubmit={handleSubmit}>
+                <h2>Sign Up</h2>
+                <label>Name:
+                    <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+                </label>
+                <label>Email:
+                    <input type="email" name="email" value={formData.email} onChange={handleChange} required />
+                </label>
+                <label>Password:
+                    <input type="password" name="password" value={formData.password} onChange={handleChange} required />
+                </label>
+                <button type="submit">Sign Up</button>
+            </form>
+            {message && <p>{message}</p>}
+        </div>
     );
 };
 
