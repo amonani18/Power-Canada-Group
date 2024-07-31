@@ -2,6 +2,7 @@ import config from './config/config.js';
 import app from './server/express.js';
 import mongoose from 'mongoose';
 
+//Here is mongodb connection
 mongoose.Promise = global.Promise;
 mongoose.connect(config.mongoUri, {
   useNewUrlParser: true,
