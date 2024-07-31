@@ -17,7 +17,7 @@ const App = () => {
 
     useEffect(() => {
         const fetchUsers = async () => {
-            const result = await axios('http://localhost:5000/api/users');
+            const result = await axios('https://power-canada-group-backend.onrender.com/api/users');
             setUsers(result.data);
         };
         fetchUsers();

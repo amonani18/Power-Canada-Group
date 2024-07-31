@@ -12,7 +12,7 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/signin', { email, password });
+      const response = await axios.post('https://power-canada-group-backend.onrender.com/api/auth/signin', { email, password });
       localStorage.setItem('token', response.data.token);
       navigate('/profile');
     } catch (error) {
