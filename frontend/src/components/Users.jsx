@@ -12,7 +12,7 @@ function Users() {
   }, []);
 
   const fetchUsers = () => {
-    axios.get('http://localhost:3001/users')
+    axios.get('https://power-canada-group-backend.onrender.com/users')
       .then(response => {
         setUsers(response.data);
       })
@@ -21,7 +21,7 @@ function Users() {
 
   const handleDelete = (userId) => {
     console.log("Attempting to delete user with ID:", userId);
-    axios.delete(`http://localhost:3001/users/${userId}`)
+    axios.delete(`https://power-canada-group-backend.onrender.com/users/${userId}`)
       .then(() => {
         console.log("User deleted, refreshing list.");
         fetchUsers();  // Refresh the list after deleting
@@ -41,7 +41,7 @@ function Users() {
   };
 
   const saveEdit = () => {
-    axios.put(`http://localhost:3001/users/${editingUser._id}`, { name: editName, email: editEmail })
+    axios.put(`https://power-canada-group-backend.onrender.com/users/${editingUser._id}`, { name: editName, email: editEmail })
       .then(() => {
         fetchUsers();  // Refresh the list after successful update
         setEditingUser(null);  // Reset editing state
