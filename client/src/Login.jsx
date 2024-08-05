@@ -15,7 +15,7 @@ function Login() {
             console.log(result);
             if (result.data === "Success") {
                 // Assuming your frontend is hosted on a different port or domain
-                window.location.href = "http://localhost:3005/";  // Adjust URL as needed
+                window.location.href = "https://power-canada-group-frontend.onrender.com/";  // Adjust URL as needed
             } else {
                 alert("You are not registered to this service");
                 navigate("/register");
