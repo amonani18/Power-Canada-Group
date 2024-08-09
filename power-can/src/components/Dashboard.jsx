@@ -26,7 +26,7 @@ function Dashboard() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch('http://localhost:5000/api/users');
+        const response = await fetch('https://power-canada-group-backend.onrender.com/api/users');
         const data = await response.json();
         setUsersData(data);
       } catch (error) {
