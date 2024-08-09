@@ -10,7 +10,7 @@ function SignupModal({ isOpen, onClose, openLoginModal }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post("http://localhost:5000/api/register", { name, email, password })
+    axios.post("https://power-canada-group-backend.onrender.com/api/register", { name, email, password })
       .then(() => {
         onClose();
         openLoginModal(); // Open the login modal for immediate login
