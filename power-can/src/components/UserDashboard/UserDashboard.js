@@ -22,7 +22,7 @@ function UserDashboard() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch(`http://localhost:5000/api/users/${name}`);
+        const response = await fetch(`https://power-canada-group-backend.onrender.com/api/users/${name}`);
         const data = await response.json();
         setUserData(data);
       } catch (error) {
