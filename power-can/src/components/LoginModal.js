@@ -11,7 +11,7 @@ function LoginModal({ isOpen, onClose, setIsAdmin }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post("http://localhost:5000/api/login", { email, password })
+    axios.post("https://power-canada-group-backend.onrender.com/api/login", { email, password })
       .then((response) => {
         const user = response.data;
         if (user.isAdmin) {
